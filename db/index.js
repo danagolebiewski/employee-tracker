@@ -8,11 +8,11 @@ class DB {
 findAllEmployees() {
   return this.connection.promise().query("");
 }
-findAllDepartments() {
-  return this.connection.promise().query("");
+findAllDepartments(department) {
+  return this.connection.promise().query("INSERT INTO department SET ?", department);
 }
-findAllRoles() {
-  return this.connection.promise().query("");
+findAllRoles(role) {
+  return this.connection.promise().query("INSERT INTO role SET ?", role);
 }
 createRole() {
   return this.connection.promise().query("");

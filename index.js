@@ -78,9 +78,49 @@ function viewEmployees() {
   db.findAllEmployees().then();
 }
 function viewDepartments() {
-  db.findAllDepartments().then();
+  prompt([
+    {
+    name: "name",
+    value: "What is your department name?"
+  }
+]
+).then(res => {
+    let name = res.name;
+  })
+  db.findAllDepartments()
+  .then(([rows]) => {
+    let department = rows;
+    const deptChoices = department.map(({
+      name
+    }) => ({ name: title, value: id
+    })),
+  }).then(
+   choice()
+  );
 }
 function viewRoles() {
+  prompt([
+    {
+      name: "title",
+      value: "What is your title?"
+    },
+    {
+      name: "salary",
+      value: "What is the salary?"
+    },
+  ]
+  ).then(res => {
+    let title = res.title;
+    let salary = res.salary;
+    db.viewRoles()
+    .then(([rows]) => {
+      let roles = rows;
+    const viewRoles = roles.map(({
+      title, salary
+    }) => ({name: title, value: salary
+    }));
+    })
+  })
   db.findAllRoles().then();
 }
 function addRole() {
@@ -115,7 +155,7 @@ function addEmployee() {
     })
   })
   db.createEmployee().then();
-}
+  }}
 function addDepartment() {
   db.createDepartment().then();
 }
@@ -128,7 +168,7 @@ function quit() {
 }
 
 
-// view all departments - have to call out rows and define rows second .then goes back to switch
+// view all departments - have to call out rows and define rows second .then goes back to switch - attempted this one... 
 // view roles - 
 // view employees 
 // methods? other creates are similar to the one we did 
