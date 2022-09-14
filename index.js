@@ -42,7 +42,7 @@ function questions() {
         {
           name: "Quit",
           value: "QUIT",
-        }, 
+        },
       ],
     },
   ]).then((res) => {
@@ -69,107 +69,164 @@ function questions() {
       case "UPDATE_EMPLOYEE_ROLE":
         updateEmployeeRole();
         break;
-      default: 
+      default:
         quit();
     }
   });
 }
 function viewEmployees() {
-  db.findAllEmployees().then();
+  db.findAllEmployees()
+    .then(([rows]) => {
+      let employees = rows;
+      console.table(employees);
+    })
+    .then(() => questions());
 }
+
 function viewDepartments() {
-  prompt([
-    {
-    name: "name",
-    value: "What is your department name?"
-  }
-]
-).then(res => {
-    let name = res.name;
-  })
   db.findAllDepartments()
-  .then(([rows]) => {
-    let department = rows;
-    const deptChoices = department.map(({
-      name
-    }) => ({ name: title, value: id
-    })),
-  }).then(
-   choice()
-  );
+    .then(([rows]) => {
+      let departments = rows;
+      console.table(departments);
+    })
+    .then(() => questions());
 }
+
 function viewRoles() {
-  prompt([
-    {
-      name: "title",
-      value: "What is your title?"
-    },
-    {
-      name: "salary",
-      value: "What is the salary?"
-    },
-  ]
-  ).then(res => {
-    let title = res.title;
-    let salary = res.salary;
-    db.viewRoles()
+  db.findAllRoles()
     .then(([rows]) => {
       let roles = rows;
-    const viewRoles = roles.map(({
-      title, salary
-    }) => ({name: title, value: salary
-    }));
+      console.table(roles);
     })
-  })
-  db.findAllRoles().then();
+    .then(() => questions());
 }
-function addRole() {
+
+function addRole() { 
+  //pull from database - department 
+  //create iteration based on departments 
+  //create prompts - what is the title of the role, salary, department id 
+  //.then pass throgh role and 
   db.createRole().then();
 }
 function addEmployee() {
   prompt([
     {
       name: "first_name",
-      value: "What is your first name?"
+      value: "What is your first name?",
     },
     {
       name: "last_name",
-      value: "What is your last name?"
-    }
-  ]
-  ).then(res => {
+      value: "What is your last name?",
+    },
+  ]).then((res) => {
     let firstName = res.first_name;
     let lastName = res.last_name;
-    db.findAllRoles()
-    .then(([rows]) => {
+    db.findAllRoles().then(([rows]) => {
       let roles = rows;
-    const roleChoices = roles.map(({
-      id , title
-    }) => ({ name: title, value: id
-    }));
-    prompt({
-      type: "list",
-      name: "roleId",
-      message: "What is the employees role?",
-      choices: roleChoices
-    })
-  })
-  db.createEmployee().then();
-  }}
+      const roleChoices = roles.map(({ id, title }) => ({
+        name: title,
+        value: id,
+      }));
+      prompt({
+        type: "list",
+        name: "roleId",
+        message: "What is the employees role?",
+        choices: roleChoices,
+      }).then((res) => {
+        let roleId = res.roleId;
+        db.findAllEmployees().then(([rows]) => {
+          let employees = rows;
+          const managerChoices = employees.map(
+            ({ id, first_name, last_name }) => ({
+              name: `${first_name} ${last_name}`,
+              value: id,
+            })
+          );
+          managerChoices.unshift({
+            name: "None",
+            value: null,
+          });
+          prompt({
+            type: "list",
+            name: "managerId",
+            message: "Who is the employees manager?",
+            choices: managerChoices,
+          })
+            .then((res) => {
+              let employee = {
+                manager_id: res.managerId,
+                role_id: roleId,
+                first_name: firstName,
+                last_name: lastName,
+              };
+              db.createEmployee(employee);
+            })
+            .then(() =>
+              console.log(`Added ${firstName} ${lastName} to database`)
+            )
+            .then(() => questions());
+        });
+      });
+    });
+  });
+}
 function addDepartment() {
-  db.createDepartment().then();
+  prompt([
+    {
+      name: "name",
+      value: "What is the department name?",
+    },
+  ]).then((res) => {
+    let name = res;
+    db.createDepartment(name)
+      .then(() => console.log`Added ${name.name} department to the database`)
+      .then(() => questions());
+  });
 }
 function updateEmployeeRole() {
-  db.updateEmployeeRole().then();
+  db.findAllEmployees().then(([rows]) => {
+    let employees = rows;
+    const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      value: id,
+    }));
+    prompt([
+      {
+        type: "list",
+        name: "employeeId",
+        message: "Which employees role do you want to update?",
+        choices: employeeChoices,
+      },
+    ]).then((res) => {
+      let employeeId = res.employeeId;
+      db.findAllRoles().then(([rows]) => {
+        let roles = rows;
+        const roleChoices = roles.map(({ id, title }) => ({
+          name: title,
+          value: id,
+        }));
+        prompt([
+          {
+            type: "list",
+            name: "roleId",
+            message: "Which role do you want to assign to the employee?",
+            choices: roleChoices,
+          },
+        ])
+          .then((res) => db.updateEmployeeRole(employeeId, res.roleId))
+          .then(() => questions());
+      });
+    });
+  });
 }
 function quit() {
   console.log("You're all finished");
   process.exit();
 }
 
-
-// view all departments - have to call out rows and define rows second .then goes back to switch - attempted this one... 
-// view roles - 
-// view employees 
-// methods? other creates are similar to the one we did 
-// look at statements in class activities 
+// view all departments - have to call out rows and define rows second .then goes back to switch - attempted this one...
+// view roles - attempted
+// view employees -
+// methods? other creates are similar to the one we did - check these too
+// look at statements in class activities
+// I have red squigglys and don't know why - tried to run node but the brackets are off and it won't run, name on 94 is greyed out (maybe because it's the word name and it's ok?)

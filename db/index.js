@@ -6,13 +6,13 @@ class DB {
     this.connection = connection;
   }
 findAllEmployees() {
-  return this.connection.promise().query("");
+  return this.connection.promise().query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id;");
 }
-findAllDepartments(department) {
-  return this.connection.promise().query("INSERT INTO department SET ?", department);
+findAllDepartments() {
+  return this.connection.promise().query("SELECT department.id, department.name FROM department");
 }
-findAllRoles(role) {
-  return this.connection.promise().query("INSERT INTO role SET ?", role);
+findAllRoles() {
+  return this.connection.promise().query("SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id");
 }
 createRole() {
   return this.connection.promise().query("");
@@ -27,7 +27,7 @@ updateEmployeeRole() {
   return this.connection.promise().query("");
 }
 }
-// don't watn to update employee managers 
+// don't want to update employee managers 
 // view employees by manager
 // view employees by dept
 // delete dept roles and employees
