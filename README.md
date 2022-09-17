@@ -1,18 +1,30 @@
-# employee-tracker
-GIVEN a command-line application that accepts user input
-WHEN I start the application
-THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
-WHEN I choose to view all departments
-THEN I am presented with a formatted table showing department names and department ids
-WHEN I choose to view all roles
-THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-WHEN I choose to view all employees
-THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-WHEN I choose to add a department
-THEN I am prompted to enter the name of the department and that department is added to the database
-WHEN I choose to add a role
-THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-WHEN I choose to add an employee
-THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-WHEN I choose to update an employee role
-THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+#Employee Tracker App 
+
+## Table of Contents
+
+* [Description](#description)
+
+* [Installation](#installation)
+
+* [Usage](#usage)
+
+* [Questions](#questions)
+
+ ## [Description](#table-of-contents)
+ * When the application is started, you are presented with the options to view deparments, roles, employees, and add employees, add a department, and add a role. You are also presented with an option to update and employee role. When you select your option you are either presented with the information in that table, or prompted with questions to complete the task.  
+
+ ## [Installation](#table-of-contents)
+  You can install this app by cloning the repo
+
+ ## [Usage](#table-of-contents)
+ You use this app by installing node modules, and running npm start
+
+ ## [Questions](#table-of-contents)
+
+ To see my other work take a look at my public repositories on github:
+
+ Github: [Github Link](https://github.com/danagolebiewski)
+
+ To contact me directly please reach out to the following email:
+
+ Email: [dana.golebiewski@gmail.com](mailto:dana.golebiewski@gmail.com)
