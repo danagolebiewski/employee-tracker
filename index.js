@@ -1,6 +1,5 @@
 // root
 const { prompt } = require("inquirer");
-const { listenerCount, title } = require("process");
 const db = require("./db");
 require("console.table");
 
@@ -102,11 +101,70 @@ function viewRoles() {
 }
 
 function addRole() { 
-  //pull from database - department 
-  //create iteration based on departments 
-  //create prompts - what is the title of the role, salary, department id 
-  //.then pass throgh role and 
-  db.createRole().then();
+  db.findAllDepartments()
+  .then(([rows]) => {
+    let departments = rows;
+    const deptmentChoices = departments.map(({ id, name }) => ({
+      name: name, value: id
+    }));
+
+  prompt([
+    {
+      name: "title",
+      message: "What is the name of your role?",
+    },
+    {
+      name: "salary",
+      message: "What is the salary of the role?",
+    },
+    {
+      type: "list",
+      name: "department_id",
+      message: "Which department does the role belong to?",
+      choices: departmentChoices
+    },
+  ]).then(role => {
+    db.createRole(role)
+      .then(() => console.log`Added ${role.title} role to the database`)
+      .then(() => questions());
+  })})
+  
+}
+function updateEmployeeRole() {
+  db.findAllEmployees().then(([rows]) => {
+    let employees = rows;
+    const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      value: id,
+    }));
+    prompt([
+      {
+        type: "list",
+        name: "employeeId",
+        message: "Which employees role do you want to update?",
+        choices: employeeChoices,
+      },
+    ]).then((res) => {
+      let employeeId = res.employeeId;
+      db.findAllRoles().then(([rows]) => {
+        let roles = rows;
+        const roleChoices = roles.map(({ id, title }) => ({
+          name: title,
+          value: id,
+        }));
+        prompt([
+          {
+            type: "list",
+            name: "roleId",
+            message: "Which role do you want to assign to the employee?",
+            choices: roleChoices,
+          },
+        ])
+          .then((res) => db.updateEmployeeRole(employeeId, res.roleId))
+          .then(() => questions());
+      });
+    });
+  });
 }
 function addEmployee() {
   prompt([
@@ -224,9 +282,4 @@ function quit() {
   process.exit();
 }
 
-// view all departments - have to call out rows and define rows second .then goes back to switch - attempted this one...
-// view roles - attempted
-// view employees -
-// methods? other creates are similar to the one we did - check these too
-// look at statements in class activities
-// I have red squigglys and don't know why - tried to run node but the brackets are off and it won't run, name on 94 is greyed out (maybe because it's the word name and it's ok?)
+questions();
