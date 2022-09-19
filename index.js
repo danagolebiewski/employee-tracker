@@ -104,7 +104,7 @@ function addRole() {
   db.findAllDepartments()
   .then(([rows]) => {
     let departments = rows;
-    const deptmentChoices = departments.map(({ id, name }) => ({
+    const departmentChoices = departments.map(({ id, name }) => ({
       name: name, value: id
     }));
 
