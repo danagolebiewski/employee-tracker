@@ -194,6 +194,7 @@ function addEmployee() {
         let roleId = res.roleId;
         db.findAllEmployees().then(([rows]) => {
           let employees = rows;
+          console.log(employees);
           const managerChoices = employees.map(
             ({ id, first_name, last_name }) => ({
               name: `${first_name} ${last_name}`,
